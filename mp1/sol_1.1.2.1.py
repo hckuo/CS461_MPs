@@ -1,8 +1,8 @@
 import sys
-cipertext_file = sys.argv[1]
+ciphertext_file = sys.argv[1]
 key_file = sys.argv[2]
 output_file = sys.argv[3]
-print cipertext_file, key_file, output_file
+print ciphertext_file, key_file, output_file
 alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 table = {}
 with open(key_file) as f:
@@ -13,13 +13,13 @@ with open(key_file) as f:
 for i in range(26):
     table[key[i]] = alphabet[i]
 
-with open(cipertext_file) as f:
-    cipertext = f.read().strip()
-    print cipertext
+with open(ciphertext_file) as f:
+    ciphertext = f.read().strip()
+    print ciphertext
     f.close()
 
 plaintext = ''
-for l in cipertext:
+for l in ciphertext:
     if l in table:
         plaintext += table[l]
     else:

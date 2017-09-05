@@ -6,15 +6,15 @@ modulo_file = sys.argv[3]
 output_file = sys.argv[4]
 
 with open(ciphertext_file) as f:
-    ciphertext = int(f.read(), 16)
+    ciphertext = int(f.read().strip(), 16)
     f.close()
 
 with open(key_file) as f:
-    key = int(f.read(), 16)
+    key = int(f.read().strip(), 16)
     f.close()
 
 with open(modulo_file) as f:
-    modulo = int(f.read(), 16)
+    modulo = int(f.read().strip(), 16)
     f.close()
 
 # Reference https://en.wikipedia.org/wiki/Modular_exponentiation#Memory-efficient_method
