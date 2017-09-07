@@ -1,5 +1,6 @@
 import urllib2
 import binascii as ba
+import os
 
 
 def get_status(u):
@@ -40,8 +41,16 @@ if __name__=='__main__':
 
     # print(iv+block_list[0])
     msg = iv+block_list[0]  # TODO we need to update this iteratively
-    # msg_url = "http://192.17.90.133:9999/mp1/${"+netid+"}/?"+msg
-    msg_url = "http://192.17.90.133:9999/mp1/"+netid+"/?"+hexdata
-    print(msg_url)
-    # get_status(msg_url)
+
+    msg_url = "http://192.17.90.133:9999/mp1/"+netid+"/?"+msg
+    msg_url = "http://127.0.0.1:8081/mp1/test/?"+msg  # for local server
+
+
+    # TODO: need to check how to get_status() method work -- always gives 500 error to me
     get_status(msg_url)
+
+    # command = "curl " + msg_url
+    # print(command)
+
+    # os.system("curl http://192.17.90.133:9999/mp1/mhasan11/?$(cat 1.2.3_ciphertext.hex)")
+    # os.system(command)  # this works (but showing padding error)
