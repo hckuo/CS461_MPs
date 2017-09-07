@@ -19,13 +19,15 @@ def read_from_file(filename):
 
     return content
 
+def change_to_hex(input_val):
+    return hex(int(input_val, 16)).rstrip("L").lstrip("0x")
 
 if __name__=='__main__':
 
     netid = "mhasan11"
 
     hexdata = read_from_file("1.2.3_ciphertext.hex")
-    # hexdata = ba.unhexlify(hexdata)
+    hexdata = change_to_hex(hexdata)  # change to a hex variable
     print(hexdata)
 
     blocksize = 16  # we have 16 bytes block
@@ -33,24 +35,30 @@ if __name__=='__main__':
 
     # this is the list of all blocks
     block_list = list(hexdata[0+i:blocksize+i] for i in range(0, len(hexdata), blocksize))
+    # change to hex values
+    block_list = [change_to_hex(blocks) for blocks in block_list]
 
-    # print(n_blocks)
-    # print(block_list)
+    print(n_blocks)
+    print(block_list)
 
     iv = "".zfill(blocksize)  # the initialization vector, set to zero
+    #iv = change_to_hex(iv)
+    # print(iv)
 
     # print(iv+block_list[0])
     msg = iv+block_list[0]  # TODO we need to update this iteratively
+    # print msg
 
     msg_url = "http://192.17.90.133:9999/mp1/"+netid+"/?"+msg
-    msg_url = "http://127.0.0.1:8081/mp1/test/?"+msg  # for local server
+    # msg_url = "http://127.0.0.1:8081/mp1/test/?"+msg  # for local server
 
+    command = "curl " + msg_url
+    # print(command)
 
     # TODO: need to check how to get_status() method work -- always gives 500 error to me
     get_status(msg_url)
 
-    # command = "curl " + msg_url
-    # print(command)
+    
 
     # os.system("curl http://192.17.90.133:9999/mp1/mhasan11/?$(cat 1.2.3_ciphertext.hex)")
     # os.system(command)  # this works (but showing padding error)
