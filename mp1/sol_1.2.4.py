@@ -1,7 +1,6 @@
 import numpy as np
 from fractions import gcd
 from Crypto.PublicKey import RSA
-from sets import Set
 from pbp import decrypt
 import sys
 
@@ -38,7 +37,6 @@ if __name__=='__main__':
     moduli = moduli.splitlines()
     moduli = [int(moduli[i], 16) for i in range(0, len(moduli))]
 
-    common_factors = Set()
     working_window = moduli
     product = np.product(working_window)
     # mining p and q
