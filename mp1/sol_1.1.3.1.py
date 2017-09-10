@@ -5,7 +5,7 @@ text2_file = sys.argv[2]
 output_file = sys.argv[3]
 
 def hammingDistance(hash1, hash2):
-    bin_str = bin(int(hash1, 16) ^ int(hash2, 16))[2:]
+    bin_str = bin(int(hash1, 16) ^ int(hash2, 16))[2:].rstrip('L')
     return sum(int(c) for c in bin_str)
 
 
