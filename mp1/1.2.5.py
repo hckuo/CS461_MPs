@@ -66,11 +66,11 @@ def output_cert(p1, p2, q1, q2):
 if __name__=='__main__':
     b1file = sys.argv[1]
     b2file = sys.argv[2]
-    with open(b1file) as f:
+    with open(b1file, 'rb') as f:
         b1 = f.read()
         f.close()
 
-    with open(b2file) as f:
+    with open(b2file, 'rb') as f:
         b2 = f.read()
         f.close()
 
@@ -109,7 +109,7 @@ if __name__=='__main__':
                     break
                 k = k + 1
                 continue
-        print 'k = ', k
+        print 'k =', k
         output_factors(p1, p2, q1, q2)
         output_cert(p1, p2, q1, q2)
         break
