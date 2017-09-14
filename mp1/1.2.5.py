@@ -1,6 +1,5 @@
 from Crypto.Util import number
 from fractions import gcd
-from gmpy import invert
 import sys
 
 def iscoprime(a, b):
@@ -22,6 +21,12 @@ def output_factors(p1, p2, q1, q2):
         f.write(hex(q2)[2:]+'\n')
         f.close()
 
+def getCRT(b1, b2, p1, p2):
+    N = p1 * p2
+    invOne = number.inverse(p2, p1)
+    invTwo = number.inverse(p1, p2)
+    return -(b1 * invOne * p2 + b2 * invTwo * p1) % N
+
 def output_cert(p1, p2, q1, q2):
     import tweakedCertbuilder as cb
     from cryptography.hazmat.primitives.serialization import Encoding
@@ -34,8 +39,8 @@ def output_cert(p1, p2, q1, q2):
     privkey2, pubkey2 = cb.make_privkey(p2, q2)
     certB = cb.make_cert(netid, pubkey2)
 
-    print certA.signature.encode('hex')
-    print certB.signature.encode('hex')
+    print 'A sig:', certA.signature.encode('hex')
+    print 'B sig:', certB.signature.encode('hex')
 
     with open(outfileA, 'wb') as f:
         f.write(certA.public_bytes(Encoding.DER))
@@ -76,13 +81,7 @@ if __name__=='__main__':
         i += 1
         p1, p2 = getCoprimes(512)
         p1p2 = p1 * p2
-        M1, M2 = p2, p1
-        t1, t2 = invert(M1, p1), invert(M2, p2)
-        b0 =  ((p1 - (b1t % p1)) * M1 * t1 + (p2 - (b2t % p2)) * M2 * t2) % p1p2 # chinese reminder theorem
-        # if isdivisible(p1, b1t + b0) and isdivisible(p2, b2t + b0):
-        #     pass
-        # else:
-        #     raise ValueError
+        b0 = getCRT(b1t, b2t, p1, p2)
         k = 0
         while True:
             b = b0 + (k * p1p2)
@@ -101,10 +100,6 @@ if __name__=='__main__':
     print 'q1', q1
     print 'p2', p2
     print 'q2', q2
-    p1 = int(p1)
-    p2 = int(p2)
-    q1 = int(q1)
-    q2 = int(q2)
     output_factors(p1, p2, q1, q2)
     output_cert(p1, p2, q1, q2)
 
