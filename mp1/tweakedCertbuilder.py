@@ -63,6 +63,7 @@ if __name__ == '__main__':
     cert = make_cert(netid, pubkey)
 
     print 'len(cert.tbs_certificate_bytes):', len(cert.tbs_certificate_bytes)
+    print 'md5 of cert.tbs_certificate_bytes[:192]:', hashlib.md5(cert.tbs_certificate_bytes[:192]).hexdigest()
     print 'md5 of cert.tbs_certificate_bytes:', hashlib.md5(cert.tbs_certificate_bytes).hexdigest()
 
     # We will check that your certificate is DER encoded

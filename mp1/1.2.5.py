@@ -1,5 +1,6 @@
 from Crypto.Util import number
 from fractions import gcd
+from gmpy import invert
 import sys
 
 def iscoprime(a, b):
@@ -44,18 +45,19 @@ def output_cert(p1, p2, q1, q2):
         f.write(certB.public_bytes(Encoding.DER))
         f.close()
 
-def getCoprimes(bitsize,e=65537):
+def getCoprimes(bitsize, e=e):
     p1, p2 = -1, -1
     while p1 == p2:
         p1 = number.getStrongPrime(bitsize, e)
         p2 = number.getStrongPrime(bitsize, e)
-        assert(gcd(e, p1-1) == 1)
-        assert(gcd(e, p2-1) == 1)
+        assert(gcd(e, p1-1)==1)
+        assert(gcd(e, p2-1)==1)
     return p1, p2
 
 if __name__=='__main__':
     b1file = sys.argv[1]
     b2file = sys.argv[2]
+    twoPowerToTenth = 1 << 1024
     with open(b1file, 'rb') as f:
         b1 = f.read()
         f.close()
@@ -66,34 +68,51 @@ if __name__=='__main__':
 
     b1 = int(b1.encode('hex'), 16)
     b2 = int(b2.encode('hex'), 16)
-
+    i = 0
+    found = False
     while True:
+        print 'iteration #', i
+        i += 1
         p1, p2 = getCoprimes(512)
+        # print p1
+        # print 'len p1:', len(bin(p1)[2:])
+        # print p2
+        # print 'len p2:', len(bin(p2)[2:])
         b1t, b2t = b1 << 1024, b2 << 1024
         p1p2 = p1 * p2
+        # print 'len p1p2:', len(bin(p1p2)[2:])
         M1, M2 = p2, p1
-        t1, t2 = number.inverse(M1, p1), number.inverse(M2, p2)
+        # t1, t2 = number.inverse(M1, p1), number.inverse(M2, p2)
+        t1, t2 = invert(M1, p1), invert(M2, p2)
         b0 =  ((p1 - (b1t % p1)) * M1 * t1 + (p2 - (b2t % p2)) * M2 * t2) % p1p2 # chinese reminder theorem
-        if isdivisible(p1, b1t + b0) and isdivisible(p2, b2t + b0):
-            print 'b0 = ', b0
+        if isdivisible(p1, b1t | b0) and isdivisible(p2, b2t | b0):
+            # print 'len(b0) = %s' % len(bin(b0)[2:])
+            pass
         else:
             raise ValueError
         k = 0
         while True:
-            if k % 1000 == 0:
-                print k
             b = b0 + (k * p1p2)
-            n1, n2 = b1t + b, b2t + b
-            q1, q2 = n1/p1, n2/p2
-            if number.isPrime(q1) and number.isPrime(q2) and iscoprime(e, q1-1) and iscoprime(e, q2-1):
+            # print 'k:', k, 'len(b):', len(bin(b)[2:])
+            k = k + 1
+            if b >= twoPowerToTenth:
                 break
-            else:
-                if k > (2 << 1024):
-                    break
-                k = k + 1
-                continue
-        print 'k =', k
-        output_factors(p1, p2, q1, q2)
-        output_cert(p1, p2, q1, q2)
-        break
+            n1, n2 = b1t | b, b2t | b
+            q1, q2 = n1 / p1, n2 / p2
+            if number.isPrime(q1) and number.isPrime(q2) and iscoprime(e, q1-1) and iscoprime(e, q2-1):
+                print 'FOUND!'
+                print 'FOUND!'
+                print 'FOUND!'
+                print 'FOUND!'
+                print 'FOUND!'
+                print 'FOUND!'
+                found = True
+                break
+        if found:
+            break
+    print 'k =', k
+    print len(bin(q1)[2:])
+    print len(bin(q2)[2:])
+    output_factors(p1, p2, q1, q2)
+    output_cert(p1, p2, q1, q2)
 
