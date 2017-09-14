@@ -79,17 +79,17 @@ if __name__=='__main__':
         M1, M2 = p2, p1
         t1, t2 = invert(M1, p1), invert(M2, p2)
         b0 =  ((p1 - (b1t % p1)) * M1 * t1 + (p2 - (b2t % p2)) * M2 * t2) % p1p2 # chinese reminder theorem
-        # if isdivisible(p1, b1t + b0) and isdivisible(p2, b2t + b0):
-        #     pass
-        # else:
-        #     raise ValueError
+        if isdivisible(p1, b1t | b0) and isdivisible(p2, b2t | b0):
+            pass
+        else:
+            raise ValueError
         k = 0
         while True:
             b = b0 + (k * p1p2)
             k = k + 1
             if b >= twoPowerToTenth:
                 break
-            n1, n2 = b1t + b, b2t + b
+            n1, n2 = b1t | b, b2t | b
             q1, q2 = n1 / p1, n2 / p2
             if number.isPrime(q1) and number.isPrime(q2) and iscoprime(e, q1-1) and iscoprime(e, q2-1):
                 print 'FOUND!'
@@ -101,10 +101,4 @@ if __name__=='__main__':
     print 'q1', q1
     print 'p2', p2
     print 'q2', q2
-    p1 = int(p1)
-    p2 = int(p2)
-    q1 = int(q1)
-    q2 = int(q2)
-    output_factors(p1, p2, q1, q2)
-    output_cert(p1, p2, q1, q2)
 

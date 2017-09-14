@@ -38,7 +38,7 @@ def make_cert(netid, pubkey, ca_key = ECE422_CA_KEY, serial=0x190fe5d7c3145a24f5
     builder = builder.not_valid_after (datetime.datetime(2017, 9, 20))
     builder = builder.subject_name(x509.Name([
         x509.NameAttribute(NameOID.COMMON_NAME, unicode(netid)),
-        x509.NameAttribute(NameOID.PSEUDONYM, u'*'),
+        x509.NameAttribute(NameOID.PSEUDONYM, u'5'),
         x509.NameAttribute(NameOID.COUNTRY_NAME, u'US'),
         x509.NameAttribute(NameOID.STATE_OR_PROVINCE_NAME, u'Illinois'),
     ]))
@@ -66,6 +66,9 @@ if __name__ == '__main__':
     print 'md5 of cert.tbs_certificate_bytes[:192]:', hashlib.md5(cert.tbs_certificate_bytes[:192]).hexdigest()
     print 'md5 of cert.tbs_certificate_bytes:', hashlib.md5(cert.tbs_certificate_bytes).hexdigest()
 
+    with open('prefix.cer', 'wb') as f:
+        f.write(cert.tbs_certificate_bytes[:192])
+        f.close()
     # We will check that your certificate is DER encoded
     # We will validate it with the following command:
     #    openssl x509 -in {yourcertificate.cer} -inform der -text -noout
