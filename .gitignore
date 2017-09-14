@@ -1,2 +1,6 @@
 **/.svn
 **/*.pyc
+**/bin
+**/.Python
+**/lib
+**/include
