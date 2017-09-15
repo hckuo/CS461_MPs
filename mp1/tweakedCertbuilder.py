@@ -38,7 +38,7 @@ def make_cert(netid, pubkey, ca_key = ECE422_CA_KEY, serial=0x190fe5d7c3145a24f5
     builder = builder.not_valid_after (datetime.datetime(2017, 9, 20))
     builder = builder.subject_name(x509.Name([
         x509.NameAttribute(NameOID.COMMON_NAME, unicode(netid)),
-        x509.NameAttribute(NameOID.PSEUDONYM, u'5'),
+        x509.NameAttribute(NameOID.PSEUDONYM, u'1234567890123456789012345678901234567890123456789012345678901234'),
         x509.NameAttribute(NameOID.COUNTRY_NAME, u'US'),
         x509.NameAttribute(NameOID.STATE_OR_PROVINCE_NAME, u'Illinois'),
     ]))
@@ -57,17 +57,20 @@ if __name__ == '__main__':
         sys.exit(1)
     netid = sys.argv[1]
     outfile = sys.argv[2]
+    prefix_len = int(sys.argv[3])
     p = number.getPrime(1024)
     q = number.getPrime(1024)
     privkey, pubkey = make_privkey(p, q)
     cert = make_cert(netid, pubkey)
 
     print 'len(cert.tbs_certificate_bytes):', len(cert.tbs_certificate_bytes)
-    print 'md5 of cert.tbs_certificate_bytes[:192]:', hashlib.md5(cert.tbs_certificate_bytes[:192]).hexdigest()
+    prefix = cert.tbs_certificate_bytes[:prefix_len]
+    print 'md5 of prefix:', hashlib.md5(prefix).hexdigest()
+    print 'prefix', cert.tbs_certificate_bytes[:prefix_len].encode('hex')
     print 'md5 of cert.tbs_certificate_bytes:', hashlib.md5(cert.tbs_certificate_bytes).hexdigest()
 
-    with open('prefix.cer', 'wb') as f:
-        f.write(cert.tbs_certificate_bytes[:192])
+    with open('prefix.bin', 'wb') as f:
+        f.write(cert.tbs_certificate_bytes[:prefix_len])
         f.close()
     # We will check that your certificate is DER encoded
     # We will validate it with the following command:

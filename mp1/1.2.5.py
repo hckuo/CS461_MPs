@@ -1,5 +1,6 @@
 from Crypto.Util import number
 from fractions import gcd
+import multiprocessing
 import sys
 
 def iscoprime(a, b):
@@ -59,25 +60,13 @@ def getCoprimes(bitsize, e=e):
         assert(gcd(e, p2-1)==1)
     return p1, p2
 
-if __name__=='__main__':
-    b1file = sys.argv[1]
-    b2file = sys.argv[2]
-    twoPowerToTenth = 1 << 1024
-    with open(b1file, 'rb') as f:
-        b1 = f.read()
-        f.close()
-
-    with open(b2file, 'rb') as f:
-        b2 = f.read()
-        f.close()
-
-    b1 = int(b1.encode('hex'), 16)
-    b2 = int(b2.encode('hex'), 16)
+def calculate(b1, b2):
     b1t, b2t = b1 << 1024, b2 << 1024
     i = 0
     found = False
     while True:
-        print 'iteration #', i
+        name = multiprocessing.current_process().name
+        print name, 'iteration #', i
         i += 1
         p1, p2 = getCoprimes(512)
         p1p2 = p1 * p2
@@ -102,4 +91,28 @@ if __name__=='__main__':
     print 'q2', q2
     output_factors(p1, p2, q1, q2)
     output_cert(p1, p2, q1, q2)
+
+if __name__=='__main__':
+    b1file = sys.argv[1]
+    b2file = sys.argv[2]
+    pool_size = int(sys.argv[3])
+    twoPowerToTenth = 1 << 1024
+    with open(b1file, 'rb') as f:
+        b1 = f.read()
+        f.close()
+
+    with open(b2file, 'rb') as f:
+        b2 = f.read()
+        f.close()
+    b1 = int(b1.encode('hex'), 16)
+    b2 = int(b2.encode('hex'), 16)
+    pool = []
+    for i in range(pool_size):
+        p = multiprocessing.Process(target=calculate, args=(b1,b2))
+        print 'New Process', p.name
+        pool.append(p)
+    for p in pool:
+        p.start()
+    for p in pool:
+        p.join()
 
