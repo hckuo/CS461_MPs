@@ -28,9 +28,9 @@ def length_extension_hash(query, suffix):
 
 def construct_query(query, newHash, suffix):
     # need to add a 8-character long password
-    unpadded_size = 8 + len(query[38:])
+    unpadded_size = 8 + len(query[39:])
     padding_str = padding(unpadded_size * 8)
-    return 'token=' + newHash + query[38:] + quote(padding_str)  + suffix
+    return 'token=' + newHash + '&' + query[39:] + quote(padding_str)  + suffix
 
 # message : 12345678&user=admin&command1=ListFiles&command2=NoOp
 # 52 bytes long
