@@ -49,18 +49,18 @@ def main():
                         
                         # print "in if!"
                         
-                        if dst not in save_syn_ack :
+                        if dst not in save_syn_ack:
                             save_syn_ack[dst] = 0
                         save_syn_ack[dst] += 1
                    
                     else:
-                        if src not in save_syn :
+                        if src not in save_syn:
                             save_syn[src] = 0
                         save_syn[src] += 1
     
     for address in save_syn:
         
-        if address not in save_syn_ack :
+        if address not in save_syn_ack:
             # print "not here"
             save_syn_ack[address] = 0
         
