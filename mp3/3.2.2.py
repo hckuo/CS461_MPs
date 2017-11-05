@@ -28,7 +28,7 @@ def main():
         try:
             eth = dpkt.ethernet.Ethernet(buf)
 
-        except Exception:
+        except dpkt.UnpackError or AttributeError:
             continue
 
 
@@ -64,7 +64,7 @@ def main():
             # print "not here"
             save_syn_ack[address] = 0
 
-        if save_syn[address] > 3*save_syn_ack[address]:
+        if save_syn[address] > save_syn_ack[address]*3:
             print address
 
     # print "script finished!"
