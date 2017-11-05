@@ -5,5 +5,6 @@
 # pop3
 ftp
 ssh
+http
 https
 tmesis-upshot
