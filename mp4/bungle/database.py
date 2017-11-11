@@ -7,16 +7,16 @@ def connect():
     """makes a connection to MySQL database.
     @return a mysqldb connection
     """
-    
+
     #TODO: fill out function parameters. Use the user/password combo for the user you created in 2.1.2.1
-    
+
     return mdb.connect(host="localhost",
-                       user="",
-                       passwd="",
-                       db="");
+                       user="hckuo2",
+                       passwd="b930b30771580f63ab0c1b267c49dda742135ab3534d446892714da1cf02eec4",
+                       db="project2");
 
 def createUser(username, password):
-    """ creates a row in table named user 
+    """ creates a row in table named user
     @param username: username of user
     @param password: password of user
     """
@@ -24,6 +24,8 @@ def createUser(username, password):
     db_rw = connect()
     cur = db_rw.cursor()
     #TODO: Implement a prepared statement using cur.execute() so that this query creates a row in table user
+    passwdhash = md5(password).hexdigest()
+    cur.execute("INSERT INTO users (username, password, passwordhash) VALUES (%s, %s, %s)", (username, password, passwdhash))
     db_rw.commit()
 
 def validateUser(username, password):
@@ -36,6 +38,7 @@ def validateUser(username, password):
     db_rw = connect()
     cur = db_rw.cursor()
     #TODO: Implement a prepared statement using cur.execute() so that this query selects a row from table user
+    cur.execute("SELECT id FROM users WHERE username = %s AND password = %s", (username, password))
     if cur.rowcount < 1:
         return False
     return True
@@ -52,6 +55,7 @@ def fetchUser(username):
     cur = db_rw.cursor(mdb.cursors.DictCursor)
     print username
     #TODO: Implement a prepared statement so that this query selects a id and username of the row which has column username = username
+    cur.execute("SELECT id, username FROM users WHERE username = %s", (username,))
     if cur.rowcount < 1:
         return None
     return FormsDict(cur.fetchone())
@@ -65,11 +69,12 @@ def addHistory(user_id, query):
     db_rw = connect()
     cur = db_rw.cursor()
     #TODO: Implement a prepared statment using cur.execute() so that this query inserts a row in table history
+    cur.execute("INSERT INTO history (user_id, query) VALUES (%s, %s)", (user_id, query))
     db_rw.commit()
 
 #grabs last 15 queries made by user with id=user_id from table named history
 def getHistory(user_id):
-    """ grabs last 15 distinct queries made by user with id=user_id from 
+    """ grabs last 15 distinct queries made by user with id=user_id from
     table named history
     @param user_id: integer id of user
     @return a first column of a row which MUST be query
@@ -78,5 +83,6 @@ def getHistory(user_id):
     db_rw = connect()
     cur = db_rw.cursor()
     #TODO: Implement a prepared statement using cur.execute() so that this query selects 15 distinct queries from table history
+    cur.execute("SELECT query FROM history WHERE user_id = %s ORDER BY id DESC LIMIT 15", (user_id,))
     rows = cur.fetchall();
     return [row[0] for row in rows]
