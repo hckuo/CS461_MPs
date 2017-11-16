@@ -18,7 +18,7 @@ def gethash():
         m.update(s)
 
         # search pattern ignoring case
-        if re.search(sqlpattern, str(m.digest()), re.I ):
+        if re.search(sqlpattern, str(m.digest()), re.I):
             print s
             break
 
